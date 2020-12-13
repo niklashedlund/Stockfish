@@ -1082,7 +1082,9 @@ Value Eval::evaluate(const Position& pos) {
 
   // Guarantee evaluation does not hit the tablebase range
   v = std::clamp(v, VALUE_TB_LOSS_IN_MAX_PLY + 1, VALUE_TB_WIN_IN_MAX_PLY - 1);
-
+    
+ // if(pos.side_to_move() == BLACK) v= (-1*v);
+  //return VALUE_ZERO;
   return v;
 }
 
