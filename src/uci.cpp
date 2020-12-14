@@ -84,6 +84,7 @@ namespace {
     StateListPtr states(new std::deque<StateInfo>(1));
     Position p;
     p.set(pos.fen(), Options["UCI_Chess960"], &states->back(), Threads.main());
+    p.set_whitekingsrook_ply(pos.whitekingsrook_ply());
 
     Eval::NNUE::verify();
 

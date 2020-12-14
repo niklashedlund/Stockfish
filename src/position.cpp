@@ -276,6 +276,8 @@ Position& Position::set(const string& fenStr, bool isChess960, StateInfo* si, Th
   // Convert from fullmove starting from 1 to gamePly starting from 0,
   // handle also common incorrect FEN with fullmove = 0.
   gamePly = std::max(2 * (gamePly - 1), 0) + (sideToMove == BLACK);
+  whitekingsrookSquare = SQ_H1;
+
 
   chess960 = isChess960;
   thisThread = th;
@@ -799,6 +801,15 @@ void Position::do_move(Move m, StateInfo& newSt, bool givesCheck) {
       k ^= Zobrist::castling[st->castlingRights];
   }
 
+  if (type_of(pc) == ROOK && us == WHITE 
+       && from == whitekingsrookSquare
+        ){
+    //   sync_cout << "white king rook square " << UCI::square(whitekingsrookSquare) << sync_endl;
+    //   sync_cout << "from:                  " << UCI::square(from) << "int " << from << sync_endl;
+    //   sync_cout << "to:                    " << UCI::square(to)  << "int " << to << sync_endl;
+      whitekingsrookSquare = to;
+      ++whitekingsrookPly;
+  } 
   // Move the piece. The tricky Chess960 castling is handled earlier
   if (type_of(m) != CASTLING)
   {
@@ -811,6 +822,8 @@ void Position::do_move(Move m, StateInfo& newSt, bool givesCheck) {
 
       move_piece(from, to);
   }
+  
+  
 
   // If the moving piece is a pawn do some special extra work
   if (type_of(pc) == PAWN)
@@ -956,8 +969,11 @@ void Position::undo_move(Move m) {
   // Finally point our state pointer back to the previous state
   st = st->previous;
   --gamePly;
-
-  assert(pos_is_ok());
+   if (type_of(pc) == ROOK && us == WHITE && to == whitekingsrookSquare){
+       whitekingsrookSquare = from;
+        --whitekingsrookPly;
+   }
+   assert(pos_is_ok());
 }
 
 

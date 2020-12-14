@@ -1143,8 +1143,13 @@ namespace {
     assert(moveCount || !ss->inCheck || excludedMove || !MoveList<LEGAL>(pos).size());
 
     if (!moveCount)
-        bestValue = excludedMove ? alpha
-                   :     ss->inCheck ? us == BLACK ? -mated_in(ss->ply) : mated_in(ss->ply) : VALUE_DRAW;
+        bestValue = excludedMove ? 
+                        alpha : 
+                            ss->inCheck  && pos.getWhitekingsrookSquare() ==  SQ_E5 ?  
+                             us == BLACK ? 
+                                -mated_in(ss->ply) : 
+                                mated_in(ss->ply) : 
+                    VALUE_DRAW;
 
     // If there is a move which produces search value greater than alpha we update stats of searched moves
     else if (bestMove)
@@ -1399,7 +1404,8 @@ namespace {
     {
         assert(!MoveList<LEGAL>(pos).size());
 
-        return mated_in(ss->ply); // Plies to mate from the root
+        return pos.getWhitekingsrookSquare() == SQ_E5 ? pos.side_to_move() == BLACK ? -mated_in(ss->ply) : mated_in(ss->ply) : VALUE_DRAW; // Plies to mate from the root
+    
     }
 
     // Save gathered info in transposition table

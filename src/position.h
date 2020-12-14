@@ -154,6 +154,9 @@ public:
   // Other properties of the position
   Color side_to_move() const;
   int game_ply() const;
+  int whitekingsrook_ply() const;
+  void set_whitekingsrook_ply(int newWhitekingsrookPly);
+  Square getWhitekingsrookSquare() const;
   bool is_chess960() const;
   Thread* this_thread() const;
   bool is_draw(int ply) const;
@@ -193,6 +196,9 @@ private:
   Square castlingRookSquare[CASTLING_RIGHT_NB];
   Bitboard castlingPath[CASTLING_RIGHT_NB];
   int gamePly;
+  int whitekingsrookPly;
+  Square whitekingsrookSquare;
+
   Color sideToMove;
   Score psq;
   Thread* thisThread;
@@ -347,6 +353,18 @@ inline Value Position::non_pawn_material() const {
 
 inline int Position::game_ply() const {
   return gamePly;
+}
+
+inline int Position::whitekingsrook_ply() const {
+  return whitekingsrookPly;
+}
+
+inline void Position::set_whitekingsrook_ply(int newWhitekingsrookPly){
+  whitekingsrookPly = newWhitekingsrookPly;
+}
+
+inline Square Position::getWhitekingsrookSquare() const {
+  return whitekingsrookSquare;
 }
 
 inline int Position::rule50_count() const {
